@@ -29,6 +29,7 @@ You need to install “Git Server” to run the git commands on the Synology ser
 
 ## Getting Bootstrap
 
-cd /volume1/tftp
-
-wget https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.zip
+cd ~/
+git clone https://github.com/wernerstrydom/tftp.git
+cd tftp/scripts/
+./bootstrap.sh -v /volume1/tftp 
