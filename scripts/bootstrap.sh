@@ -1,16 +1,31 @@
 #!/bin/sh
 
+TFTPDIR="/volume1/tftp"
 SYSLINUXVER="6.03"
+TMPDIR="tmp"
+SYSLINUXDIR="$TMPDIR/syslinux"
 
-rm -Rf tmp
-mkdir -p tmp
-cd tmp
+mkdir -p $TMPDIR
 
-wget "https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-$SYSLINUXVER.zip" -O "syslinux-$SYSLINUXVER.zip"
-wget "https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-$SYSLINUXVER.zip.sign" -O "syslinux-$SYSLINUXVER.zip.sign"
+wget "https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-$SYSLINUXVER.zip" -O "$TMPDIR/syslinux-$SYSLINUXVER.zip"
 
-gpg --recv-keys 58F7ABFE
-gpg --verify "syslinux-$SYSLINUXVER.zip.sign" 
+#
+# Skip Checking 
+#
+# wget "https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-$SYSLINUXVER.zip.sign" -O "syslinux-$SYSLINUXVER.zip.sign"
+# gpg --recv-keys 58F7ABFE
+# gpg --verify "syslinux-$SYSLINUXVER.zip.sign" 
 
-cd ..
+mkdir -p -d "$SYSLINUXDIR"
+unzip "$TMPDIR/syslinux-$SYSLINUXVERz.zip" -d "$SYSLINUXDIR"
+
+cp "$SYSLINUXDIR/core/pxelinux.0" $TFTPDIR
+cp "$SYSLINUXDIR/bios/com32/elflink/ldlinux/ldlinux.c32" $TFTPDIR 
+cp "$SYSLINUXDIR/bios/memdisk/*" $TFTPDIR 
+cp "$SYSLINUXDIR/bios/com32/menu/*" $TFTPDIR 
+cp "$SYSLINUXDIR/bios/com32/chain/*" $TFTPDIR 
+
+mkdir -p "$TFTPDIR/pxelinux.cfg"
+cp "../pxelinux.cfg/*" "$TFTPDIR/pxelinux.cfg"
+
 
